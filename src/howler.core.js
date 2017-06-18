@@ -6,6 +6,9 @@
  *  goldfirestudios.com
  *
  *  MIT License
+ *
+ *  Modified by: Asher Wolfstein (asherwunk@gmail.com) June 18th, 2017
+ *  
  */
 
 (function() {
@@ -141,6 +144,87 @@
             }
           }
         }
+      }
+
+      return self;
+    },
+    
+    /**
+     * Handle stopping globally.
+     * @param  {Boolean} muted Is muted or not.
+     */
+    stop: function() {
+      var self = this || Howler;
+
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!self.ctx) {
+        setupAudioContext();
+      }
+
+      // Loop through and mute all HTML5 Audio nodes.
+      for (var i=0; i<self._howls.length; i++) {
+        self._howls[i].stop();
+      }
+
+      return self;
+    },
+    
+    /**
+     * Handle pausing globally.
+     * @param  {Boolean} muted Is muted or not.
+     */
+    pause: function() {
+      var self = this || Howler;
+
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!self.ctx) {
+        setupAudioContext();
+      }
+
+      // Loop through and mute all HTML5 Audio nodes.
+      for (var i=0; i<self._howls.length; i++) {
+        self._howls[i].pause();
+      }
+
+      return self;
+    },
+    
+    /**
+     * Handle unpausing globally.
+     * @param  {Boolean} muted Is muted or not.
+     */
+    unpause: function() {
+      var self = this || Howler;
+
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!self.ctx) {
+        setupAudioContext();
+      }
+
+      // Loop through and mute all HTML5 Audio nodes.
+      for (var i=0; i<self._howls.length; i++) {
+        self._howls[i].play();
+      }
+
+      return self;
+    },
+    
+    /**
+     * Handle fadingout globally.
+     * @param  {Boolean} muted Is muted or not.
+     */
+    fadeout: function() {
+      var self = this || Howler;
+
+      // If we don't have an AudioContext created yet, run the setup.
+      if (!self.ctx) {
+        setupAudioContext();
+      }
+
+      // Loop through and mute all HTML5 Audio nodes.
+      for (var i=0; i<self._howls.length; i++) {
+        self._howls[i].fade(1.0, 0.0, 5000);
+        self._howls[i].loop(false);
       }
 
       return self;
@@ -481,6 +565,8 @@
       self._endTimers = {};
       self._queue = [];
 
+      self._buffer = false;
+      
       // Setup event listeners.
       self._onend = o.onend ? [{fn: o.onend}] : [];
       self._onfade = o.onfade ? [{fn: o.onfade}] : [];
@@ -554,8 +640,13 @@
           // Make sure the source is a string.
           str = self._src[i];
           if (typeof str !== 'string') {
-            self._emit('loaderror', null, 'Non-string found in selected audio sources - ignoring.');
-            continue;
+            if (str.constructor == Uint8Array) {
+              url = str;
+              break;
+            } else {
+              self._emit('loaderror', null, 'Non-string found in selected audio sources - ignoring.');
+              continue;
+            }
           }
 
           // Extract the file extension from the URL or base64 data URI.
@@ -2047,6 +2138,12 @@
   var loadBuffer = function(self) {
     var url = self._src;
 
+    if (url.constructor == Uint8Array) {
+      self._buffer = url;
+      decodeAudioData(url, self);
+      return;
+    }
+    
     // Check if the buffer has already been cached and use it instead.
     if (cache[url]) {
       // Set the duration from the cache.
@@ -2065,7 +2162,8 @@
       for (var i=0; i<data.length; ++i) {
         dataView[i] = data.charCodeAt(i);
       }
-
+      
+      self._buffer = dataView.buffer;
       decodeAudioData(dataView.buffer, self);
     } else {
       // Load the buffer from the URL.
@@ -2079,7 +2177,8 @@
           self._emit('loaderror', null, 'Failed loading audio file with status: ' + xhr.status + '.');
           return;
         }
-
+        
+        self._buffer = xhr.response;
         decodeAudioData(xhr.response, self);
       };
       xhr.onerror = function() {
