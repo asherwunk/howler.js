@@ -5,3 +5,5 @@ This is my own personal fork of the amazing howler library: https://howlerjs.com
 # What's Different
 
 I have enabled sources to also be buffer arrays, and the ability to extract the buffer array of a sound (it's stored as a property on self)
+
+I also have added a few functions to the global howler, including pause, play, fade etc.
