@@ -1,3 +1,7 @@
+# THIS IS A FORK
+
+This is my own personal fork of the amazing howler library. I have modified it slightly for use in my own asherwunk/pygjs (PyGame in NodeWebkit/Browser).  I forked it so that I can perform a commit showing all my customizations (there are few)
+
 [![howler.js](https://s3.amazonaws.com/howler.js/howler-logo.png "howler.js")](https://howlerjs.com)
 
 # Description
