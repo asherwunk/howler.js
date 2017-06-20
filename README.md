@@ -9,3 +9,13 @@ This library is integrated into asherwunk/gamejs
 I have enabled sources to also be buffer arrays, and the ability to extract the buffer array of a sound (it's stored as a property on self)
 
 I also have added a few functions to the global howler, including pause, play, fade etc.
+
+# About Me
+
+If you appreciate my programming consider supporting me at the following links:
+* [KO-FI](http://ko-fi.com/asherwolfstein)
+* [Patreon](https://www.patreon.com/asherwolfstein)
+
+For further information on the author please visit:
+* [My Beautiful Life - And All It's Friends](http://wunk.me/ "Personal Blog")
+* [Phabstractic Homepage](http://wunk.me/programming-projects/phabstractic/)
